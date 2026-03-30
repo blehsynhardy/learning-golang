@@ -1,11 +1,15 @@
 package main
 
+
+type number interface {
+	int | float64
+}
 // sum is a generic function. 
 // [T int | float64] defines a type parameter 'T' with a type constraint.
 // This means the function can accept either a slice of integers or a slice of float64s.
 // Generics allow us to write reusable code that works with multiple types while 
 // maintaining type safety at compile time, avoiding the need for interface{} and type assertions.
-func sum[T int | float64](numbers ...T) T {
+func sum[T number](numbers ...T) T {
 	// Initialize total with the zero value of type T
 	total := T(0)
 	for _, number := range numbers {

@@ -38,6 +38,7 @@ go test ./...
 - `16-interfaces/`: interfaces and polymorphism
 - `17-stringer-interface/`: Stringer interface implementation (`fmt.Stringer`)
 - `18-Generics/`: generic functions and types (Go 1.18+)
+- `19-project-payroll/`: payroll management system example
 - `conditional/`: if/else and switch statements
 - `loop/`: for loops and iteration patterns
 - `pointers/`: pointer usage and semantics
