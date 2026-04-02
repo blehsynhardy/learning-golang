@@ -39,6 +39,8 @@ go test ./...
 - `17-stringer-interface/`: Stringer interface implementation (`fmt.Stringer`)
 - `18-Generics/`: generic functions and types (Go 1.18+)
 - `19-project-payroll/`: payroll management system example
+- `21-embedding-with-inheritance/`: struct embedding and composition
+- `23-strings/`: string manipulation and operations
 - `conditional/`: if/else and switch statements
 - `loop/`: for loops and iteration patterns
 - `pointers/`: pointer usage and semantics
