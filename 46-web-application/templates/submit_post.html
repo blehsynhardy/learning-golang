@@ -1,0 +1,25 @@
+{{define "content"}}
+<div class="container">
+  <div class="auth-form">
+    <h2>Submit new post</h2>
+
+    <div class="error-message"></div>
+    <form action="/submit" method="post" autocomplete="off">
+      <div class="form-group">
+        <label for="title">Post title:</label>
+        <input type="text" id="title" name="title" required />
+      </div>
+
+      <div class="form-group">
+        <label for="url">Post URL:</label>
+        <input type="url" id="url" name="url" required />
+        <!-- {{with .Errors.Get "url"}}
+                <p class="inline-error">{{.}}</p>
+                {{end}} -->
+      </div>
+
+      <button type="submit" class="btn-primary">Submit post</button>
+    </form>
+  </div>
+</div>
+{{end}}

@@ -18,6 +18,12 @@ type RenderCache struct {
 	templateDir string
 }
 
+type templateData struct {
+	Form            *Form
+	IsAuthenticated bool
+	Flash           string
+}
+
 // NewRenderCache creates a new RenderCache.
 // Set isDev = true during development so templates reload on every request.
 // Set isDev = false in production to cache parsed templates in memory.

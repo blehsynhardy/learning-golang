@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func (app *Application) render(w http.ResponseWriter, templateName string, data interface{}) {
+func (app *Application) render(w http.ResponseWriter, r *http.Request, templateName string, data *templateData) {
 
 	if app.rc == nil {
 
@@ -14,6 +14,19 @@ func (app *Application) render(w http.ResponseWriter, templateName string, data 
 
 	}
 
-	app.rc.Render(w, templateName, data)
+	app.rc.Render(w, templateName, app.defaultTemplateData(data, r))
+
+}
+
+func (app *Application) defaultTemplateData(data *templateData, r *http.Request) *templateData {
+
+	if data == nil {
+		data = &templateData{}
+	}
+
+	data.Flash = app.session.PopString(r, "flash")
+	data.IsAuthenticated = app.isAuthenticated(r)
+
+	return data
 
 }

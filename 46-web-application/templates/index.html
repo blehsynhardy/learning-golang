@@ -27,11 +27,11 @@
     {{end}} {{end}}
   </div>
 
-  {{if gt .Metadata.TotalRecords .Metadata.PageSize}}
+  {{if or .PrevLink .NextLink}}
   <div class="pagination">
-    {{if gt .Metadata.PrevPage 0}}
+    {{if .PrevLink}}
     <a href="{{.PrevLink}}" class="more-link">Prev</a>
-    {{end}} {{if gt .Metadata.NextPage 0}}
+    {{end}} {{if .NextLink}}
     <a href="{{.NextLink}}" class="more-link">Next</a>
     {{end}}
   </div>

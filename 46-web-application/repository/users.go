@@ -5,13 +5,19 @@ import (
 	"database/sql"
 	"main/45-database/6-repository-pattern/models"
 
+	"errors"
+
 	"golang.org/x/crypto/bcrypt"
 )
+
+var ErrInvalidCredentials = errors.New("invalid credentials")
+var ErrorNoRowsFound = errors.New("not found")
 
 type UserRepository interface {
 	CreateUserWithProfile(name, email, password, bio, avatar string) (int64, error)
 	FetchAllUsers() ([]models.User, error)
 	FetchUserByEmail(email string) (*models.User, error)
+	Authenticate(email, password string) (int, error)
 }
 
 type SqliteUserRepository struct {
@@ -125,42 +131,55 @@ func (r *SqliteUserRepository) FetchAllUsers() ([]models.User, error) {
 }
 
 func (r *SqliteUserRepository) FetchUserByEmail(email string) (*models.User, error) {
-
 	ctx := context.Background()
 
-	query := `SELECT u.id, u.name, u.email, u.password, u.createdAt,
-			   p.bio, p.avatar, p.createdAt, p.updatedAt
-		FROM users u
-		JOIN profiles p ON u.id = p.userId
-		WHERE u.email = ?`
+	query := `SELECT id, name, email, password, createdAt FROM users WHERE email = ?`
 
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
-
 	defer stmt.Close()
 
-	row := stmt.QueryRowContext(ctx, query, email)
+	row := stmt.QueryRowContext(ctx, email)
 
 	var user models.User
-
 	err = row.Scan(
 		&user.ID,
 		&user.Name,
 		&user.Email,
 		&user.Password,
 		&user.CreatedAt,
-		&user.Profile.Bio,
-		&user.Profile.Avatar,
-		&user.Profile.CreatedAt,
-		&user.Profile.UpdatedAt,
 	)
-
 	if err != nil {
 		return nil, err
 	}
 
 	return &user, nil
+}
+
+func (r *SqliteUserRepository) Authenticate(email, password string) (int, error) {
+
+	user, err := r.FetchUserByEmail(email)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, ErrorNoRowsFound
+		}
+		return 0, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	if err != nil {
+
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return 0, ErrInvalidCredentials
+		}
+
+		return 0, err
+	}
+
+	return user.ID, nil
 
 }
